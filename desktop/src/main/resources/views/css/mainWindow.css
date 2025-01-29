@@ -1,0 +1,11 @@
+* {
+    primary: #0F1035;
+    primary-light: #365486;
+    secondary: #7FC7D9;
+    secondary-light: #DCF2F1;
+}
+
+.main-frame {
+    -fx-pref-width: 900px;
+    -fx-pref-height: 600px;
+}
