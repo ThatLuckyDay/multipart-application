@@ -1,3 +1,6 @@
+/* Слоистая архитектура - это архитектурный стиль, при котором приложение разделяется на
+ * логические уровни. Обычно: presentation -> business -> data */
+
 package com.pet;
 
 import org.springframework.boot.SpringApplication;
