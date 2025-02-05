@@ -1,8 +1,10 @@
-package com.pet.service.SortImpl;
+package com.pet.service.sortImpl;
 
 
 import com.pet.service.InplaceSort;
+import org.springframework.stereotype.Component;
 
+@Component
 public class MergeSort implements InplaceSort {
 
     @Override
