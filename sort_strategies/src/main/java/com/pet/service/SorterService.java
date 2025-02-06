@@ -28,8 +28,14 @@ public class SorterService {
     public void addSortedByMergeSort(int[] array) {
         proxyFactory.addAdvice(timeAdvice);
         proxyFactory.setTarget(mergeSort);
+
+        /* test aop */
         long start = System.nanoTime();
-        ((InplaceSort)proxyFactory.getProxy()).sort(array);
+        try {
+            ((InplaceSort)proxyFactory.getProxy()).sort(array);
+        } catch (RuntimeException e) {
+            System.out.println(e.getMessage());
+        }
         long end = System.nanoTime();
 
         sorterRepository
