@@ -4,7 +4,7 @@ package com.pet.service.sortImpl;
 import com.pet.service.InplaceSort;
 import org.springframework.stereotype.Component;
 
-@Component
+@Component(value = "mergeSort")
 public class MergeSort implements InplaceSort {
 
     @Override

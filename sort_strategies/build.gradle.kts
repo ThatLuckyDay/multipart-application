@@ -18,6 +18,10 @@ dependencies {
     /* spring */
     implementation("org.springframework.boot:spring-boot-starter")
 
+    /* aop */
+    implementation("org.springframework.boot:spring-boot-starter-aop")
+    implementation("org.aspectj:aspectjweaver")
+
     /* test */
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.0")

@@ -3,33 +3,41 @@ package com.pet.service;
 import com.pet.model.Sorter;
 import com.pet.repository.SorterRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-@AllArgsConstructor(onConstructor = @__(@Autowired))
 public class SorterService {
 
+    @Autowired
     private SorterRepository sorterRepository;
 
+    @Autowired
+    @Qualifier(value = "mergeSort")
     private InplaceSort mergeSort;
 
-    private long measureFunctionExecutionTime(InplaceSort sorter, int[] array) {
-        long startTime = System.nanoTime();
-        sorter.sort(array);
-        long endTime = System.nanoTime();
-        return endTime - startTime;
-    }
+    @Autowired
+    private TimeAdvice timeAdvice;
+
+    private final ProxyFactory proxyFactory = new ProxyFactory();
 
     public void addSortedByMergeSort(int[] array) {
+        proxyFactory.addAdvice(timeAdvice);
+        proxyFactory.setTarget(mergeSort);
+        long start = System.nanoTime();
+        ((InplaceSort)proxyFactory.getProxy()).sort(array);
+        long end = System.nanoTime();
+
         sorterRepository
                 .getSorters()
                 .add(new Sorter(
                         mergeSort.getClass().getName(),
                         array.length,
-                        measureFunctionExecutionTime(mergeSort, array)
+                        start - end
                 ));
     }
 

@@ -3,15 +3,16 @@
 
 package com.pet;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.pet.service.SorterService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 
 @SpringBootApplication
 public class SortStrategies {
-    @Autowired
 
     public static void main(String[] args) {
-        SpringApplication.run(SortStrategies.class, args);
+        ConfigurableApplicationContext context = SpringApplication.run(SortStrategies.class, args);
+        context.getBean(SorterService.class).addSortedByMergeSort(new int[] {5, 8, 0, 23, 8, 12, 17});
     }
 }
