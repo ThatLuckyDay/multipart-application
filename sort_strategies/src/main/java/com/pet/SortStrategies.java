@@ -13,6 +13,10 @@ public class SortStrategies {
 
     public static void main(String[] args) {
         ConfigurableApplicationContext context = SpringApplication.run(SortStrategies.class, args);
-        context.getBean(SorterService.class).addSortedByMergeSort(new int[] {5, 8, 0, 23, 8, 12, 17});
+        try {
+            context.getBean(SorterService.class).addSortedByQuickSort(null);
+        } catch (Throwable ex) {
+            System.out.println("Test afterThrows");
+        }
     }
 }

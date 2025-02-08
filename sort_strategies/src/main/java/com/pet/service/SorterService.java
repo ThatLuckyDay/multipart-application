@@ -2,7 +2,6 @@ package com.pet.service;
 
 import com.pet.model.Sorter;
 import com.pet.repository.SorterRepository;
-import lombok.AllArgsConstructor;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -21,30 +20,52 @@ public class SorterService {
     private InplaceSort mergeSort;
 
     @Autowired
+    @Qualifier(value = "quickSort")
+    private InplaceSort quickSort;
+
+    @Autowired
     private TimeAdvice timeAdvice;
 
     private final ProxyFactory proxyFactory = new ProxyFactory();
 
-    public void addSortedByMergeSort(int[] array) {
+    public Sorter addSortedByMergeSort(int[] array) {
         proxyFactory.addAdvice(timeAdvice);
         proxyFactory.setTarget(mergeSort);
 
-        /* test aop */
         long start = System.nanoTime();
         try {
-            ((InplaceSort)proxyFactory.getProxy()).sort(array);
+            ((InplaceSort) proxyFactory.getProxy()).sort(array);
         } catch (RuntimeException e) {
             System.out.println(e.getMessage());
         }
         long end = System.nanoTime();
 
-        sorterRepository
-                .getSorters()
-                .add(new Sorter(
-                        mergeSort.getClass().getName(),
-                        array.length,
-                        start - end
-                ));
+        Sorter sorter = new Sorter(
+                mergeSort.getClass().getName(),
+                array.length,
+                start - end);
+
+        sorterRepository.getSorters().add(sorter);
+
+        return sorter;
+    }
+
+    public Sorter addSortedByQuickSort(int[] array) {
+        proxyFactory.addAdvice(timeAdvice);
+        proxyFactory.setTarget(quickSort);
+
+        long start = System.nanoTime();
+        int[] result = ((InplaceSort) proxyFactory.getProxy()).sort(array);
+        long end = System.nanoTime();
+
+        Sorter sorter = new Sorter(
+                quickSort.getClass().getName(),
+                array.length,
+                start - end);
+
+        sorterRepository.getSorters().add(sorter);
+
+        return sorter;
     }
 
     public List<Sorter> getAllSorters() {
