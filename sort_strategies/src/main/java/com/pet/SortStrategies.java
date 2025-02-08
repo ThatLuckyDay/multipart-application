@@ -12,11 +12,10 @@ import org.springframework.context.ConfigurableApplicationContext;
 public class SortStrategies {
 
     public static void main(String[] args) {
+        int[] array = {-1, 5, 25, 7, 5, 10, 8, 12};
         ConfigurableApplicationContext context = SpringApplication.run(SortStrategies.class, args);
-        try {
-            context.getBean(SorterService.class).addSortedByQuickSort(null);
-        } catch (Throwable ex) {
-            System.out.println("Test afterThrows");
-        }
+        SorterService service = context.getBean(SorterService.class);
+        service.addSortedByQuickSort(array);
+        service.addSortedByMergeSort(array);
     }
 }

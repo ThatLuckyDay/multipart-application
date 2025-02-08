@@ -1,16 +1,23 @@
 package com.pet.service;
 
 import lombok.NoArgsConstructor;
-import org.springframework.aop.ThrowsAdvice;
-import org.springframework.stereotype.Component;
+import org.aopalliance.intercept.MethodInterceptor;
+import org.aopalliance.intercept.MethodInvocation;
 
-import java.lang.reflect.Method;
+import java.util.Arrays;
 
-@Component
 @NoArgsConstructor
-public class TimeAdvice implements ThrowsAdvice {
+public class TimeAdvice implements MethodInterceptor {
 
-    public void afterThrowing(Method method, Object[] args, Object target, IllegalArgumentException exception) {
-        System.out.println("Illegal exception : " + exception.getClass().getName());
+    @Override
+    public Object invoke(MethodInvocation invocation) throws Throwable {
+        System.out.println("Before around actions. Method: " + invocation.getMethod().getName() +
+                " " + invocation.getMethod().getDeclaringClass().getName());
+        Object result = invocation.proceed();
+        Arrays.stream((int[]) result).forEach(elem -> System.out.print(elem + " "));
+        System.out.println();
+        System.out.println("After around actions. Method: " + invocation.getMethod().getName() +
+                " " + invocation.getMethod().getDeclaringClass().getName());
+        return result;
     }
 }

@@ -2,11 +2,15 @@ package com.pet.service;
 
 import com.pet.model.Sorter;
 import com.pet.repository.SorterRepository;
+import org.springframework.aop.Advisor;
+import org.springframework.aop.Pointcut;
 import org.springframework.aop.framework.ProxyFactory;
+import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -23,27 +27,33 @@ public class SorterService {
     @Qualifier(value = "quickSort")
     private InplaceSort quickSort;
 
-    @Autowired
-    private TimeAdvice timeAdvice;
+    private final TimeAdvice timeAdvice = new TimeAdvice();
 
-    private final ProxyFactory proxyFactory = new ProxyFactory();
+    private final ProxyFactory proxyFactory= new ProxyFactory();
+
+    private final Pointcut pointcut = new SortPointcut();
+
+    private final Advisor advisor = new DefaultPointcutAdvisor(pointcut, timeAdvice);
+
+    {
+        proxyFactory.addAdvisor(advisor);
+    }
+
+    private long sortProceed(int[] array) {
+        long time = System.nanoTime();
+        Arrays.stream(((InplaceSort) proxyFactory.getProxy()).sort(array))
+                .forEach(elem -> System.out.print(elem + " "));
+        System.out.println();
+        return System.nanoTime() - time;
+    }
 
     public Sorter addSortedByMergeSort(int[] array) {
-        proxyFactory.addAdvice(timeAdvice);
         proxyFactory.setTarget(mergeSort);
-
-        long start = System.nanoTime();
-        try {
-            ((InplaceSort) proxyFactory.getProxy()).sort(array);
-        } catch (RuntimeException e) {
-            System.out.println(e.getMessage());
-        }
-        long end = System.nanoTime();
 
         Sorter sorter = new Sorter(
                 mergeSort.getClass().getName(),
                 array.length,
-                start - end);
+                sortProceed(array));
 
         sorterRepository.getSorters().add(sorter);
 
@@ -51,17 +61,12 @@ public class SorterService {
     }
 
     public Sorter addSortedByQuickSort(int[] array) {
-        proxyFactory.addAdvice(timeAdvice);
         proxyFactory.setTarget(quickSort);
-
-        long start = System.nanoTime();
-        int[] result = ((InplaceSort) proxyFactory.getProxy()).sort(array);
-        long end = System.nanoTime();
 
         Sorter sorter = new Sorter(
                 quickSort.getClass().getName(),
                 array.length,
-                start - end);
+                sortProceed(array));
 
         sorterRepository.getSorters().add(sorter);
 
