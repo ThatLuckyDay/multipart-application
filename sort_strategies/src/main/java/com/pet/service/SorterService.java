@@ -2,6 +2,10 @@ package com.pet.service;
 
 import com.pet.model.Sorter;
 import com.pet.repository.SorterRepository;
+import com.pet.service.advice.SortPointcut;
+import com.pet.service.advice.TimeAdvice;
+import com.pet.service.type.Iterative;
+import com.pet.service.type.Recursive;
 import org.springframework.aop.Advisor;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.framework.ProxyFactory;
@@ -16,20 +20,32 @@ import java.util.List;
 @Service
 public class SorterService {
 
-    @Autowired
-    private SorterRepository sorterRepository;
+    private final SorterRepository sorterRepository;
+
+    private final Recursive mergeSortRecursive;
+
+    private final Recursive quickSortRecursive;
+
+    private final Iterative mergeSortIterative;
+
+    private final Iterative quickSortIterative;
 
     @Autowired
-    @Qualifier(value = "mergeSort")
-    private InplaceSort mergeSort;
-
-    @Autowired
-    @Qualifier(value = "quickSort")
-    private InplaceSort quickSort;
+    public SorterService(SorterRepository sorterRepository,
+                         @Qualifier("mergeSortRecursive") Recursive mergeSortRecursive,
+                         @Qualifier("quickSortRecursive") Recursive quickSortRecursive,
+                         @Qualifier("mergeSortIterative") Iterative mergeSortIterative,
+                         @Qualifier("quickSortIterative") Iterative quickSortIterative) {
+        this.sorterRepository = sorterRepository;
+        this.quickSortRecursive = quickSortRecursive;
+        this.mergeSortRecursive = mergeSortRecursive;
+        this.mergeSortIterative = mergeSortIterative;
+        this.quickSortIterative = quickSortIterative;
+    }
 
     private final TimeAdvice timeAdvice = new TimeAdvice();
 
-    private final ProxyFactory proxyFactory= new ProxyFactory();
+    private final ProxyFactory proxyFactory = new ProxyFactory();
 
     private final Pointcut pointcut = new SortPointcut();
 
@@ -39,38 +55,48 @@ public class SorterService {
         proxyFactory.addAdvisor(advisor);
     }
 
-    private long sortProceed(int[] array) {
+    private long sortRecursive(int[] array) {
         long time = System.nanoTime();
-        Arrays.stream(((InplaceSort) proxyFactory.getProxy()).sort(array))
+        Arrays.stream(((Recursive) proxyFactory.getProxy()).sort(array))
+                .forEach(elem -> System.out.print(elem + " "));
+        System.out.println();
+        return System.nanoTime() - time;
+    }
+
+    private long sortIterative(int[] array) {
+        long time = System.nanoTime();
+        Arrays.stream(((Recursive) proxyFactory.getProxy()).sort(array))
                 .forEach(elem -> System.out.print(elem + " "));
         System.out.println();
         return System.nanoTime() - time;
     }
 
     public Sorter addSortedByMergeSort(int[] array) {
-        proxyFactory.setTarget(mergeSort);
-
-        Sorter sorter = new Sorter(
-                mergeSort.getClass().getName(),
-                array.length,
-                sortProceed(array));
-
-        sorterRepository.getSorters().add(sorter);
-
-        return sorter;
+//        proxyFactory.setTarget(mergeSort);
+//
+//        Sorter sorter = new Sorter(
+//                mergeSort.getClass().getName(),
+//                array.length,
+//                sortProceed(array));
+//
+//        sorterRepository.getSorters().add(sorter);
+//
+//        return sorter;
+        return null;
     }
 
     public Sorter addSortedByQuickSort(int[] array) {
-        proxyFactory.setTarget(quickSort);
-
-        Sorter sorter = new Sorter(
-                quickSort.getClass().getName(),
-                array.length,
-                sortProceed(array));
-
-        sorterRepository.getSorters().add(sorter);
-
-        return sorter;
+//        proxyFactory.setTarget(quickSort);
+//
+//        Sorter sorter = new Sorter(
+//                quickSort.getClass().getName(),
+//                array.length,
+//                sortProceed(array));
+//
+//        sorterRepository.getSorters().add(sorter);
+//
+//        return sorter;
+        return null;
     }
 
     public List<Sorter> getAllSorters() {

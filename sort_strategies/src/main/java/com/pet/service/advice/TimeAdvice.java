@@ -1,4 +1,4 @@
-package com.pet.service;
+package com.pet.service.advice;
 
 import lombok.NoArgsConstructor;
 import org.aopalliance.intercept.MethodInterceptor;
