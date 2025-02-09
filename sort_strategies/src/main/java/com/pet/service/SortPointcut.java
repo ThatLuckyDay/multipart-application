@@ -2,16 +2,13 @@ package com.pet.service;
 
 import com.pet.service.sortImpl.MergeSort;
 import org.springframework.aop.ClassFilter;
-import org.springframework.aop.support.DynamicMethodMatcherPointcut;
+import org.springframework.aop.support.NameMatchMethodPointcut;
 
-import java.lang.reflect.Method;
+public class SortPointcut extends NameMatchMethodPointcut {
 
-public class SortPointcut extends DynamicMethodMatcherPointcut {
-
-    @Override
-    public boolean matches(Method method, Class<?> targetClass, Object... args) {
-        System.out.println("Check method for " + method.getName());
-        return ((int[]) args[0]).length > 5;
+    public SortPointcut() {
+        super();
+        this.addMethodName("sort");
     }
 
     @Override
