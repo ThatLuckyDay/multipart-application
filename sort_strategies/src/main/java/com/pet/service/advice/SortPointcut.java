@@ -6,7 +6,7 @@ public class SortPointcut extends AspectJExpressionPointcut {
 
     public SortPointcut() {
         super();
-        this.setExpression("execution(*recursive*(..))");
+        this.setExpression("execution(* *..*Recursive*.*(..))");
     }
 
 }

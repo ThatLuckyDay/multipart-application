@@ -4,8 +4,7 @@ import com.pet.model.Sorter;
 import com.pet.repository.SorterRepository;
 import com.pet.service.advice.SortPointcut;
 import com.pet.service.advice.TimeAdvice;
-import com.pet.service.type.Iterative;
-import com.pet.service.type.Recursive;
+import com.pet.service.impl.InplaceSort;
 import org.springframework.aop.Advisor;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.framework.ProxyFactory;
@@ -22,20 +21,20 @@ public class SorterService {
 
     private final SorterRepository sorterRepository;
 
-    private final Recursive mergeSortRecursive;
+    private final InplaceSort mergeSortRecursive;
 
-    private final Recursive quickSortRecursive;
+    private final InplaceSort quickSortRecursive;
 
-    private final Iterative mergeSortIterative;
+    private final InplaceSort mergeSortIterative;
 
-    private final Iterative quickSortIterative;
+    private final InplaceSort quickSortIterative;
 
     @Autowired
     public SorterService(SorterRepository sorterRepository,
-                         @Qualifier("mergeSortRecursive") Recursive mergeSortRecursive,
-                         @Qualifier("quickSortRecursive") Recursive quickSortRecursive,
-                         @Qualifier("mergeSortIterative") Iterative mergeSortIterative,
-                         @Qualifier("quickSortIterative") Iterative quickSortIterative) {
+                         @Qualifier("mergeSortRecursive") InplaceSort mergeSortRecursive,
+                         @Qualifier("quickSortRecursive") InplaceSort quickSortRecursive,
+                         @Qualifier("mergeSortIterative") InplaceSort mergeSortIterative,
+                         @Qualifier("quickSortIterative") InplaceSort quickSortIterative) {
         this.sorterRepository = sorterRepository;
         this.quickSortRecursive = quickSortRecursive;
         this.mergeSortRecursive = mergeSortRecursive;
@@ -55,48 +54,64 @@ public class SorterService {
         proxyFactory.addAdvisor(advisor);
     }
 
-    private long sortRecursive(int[] array) {
+    private long sortProceed(int[] array) {
         long time = System.nanoTime();
-        Arrays.stream(((Recursive) proxyFactory.getProxy()).sort(array))
+        Arrays.stream(((InplaceSort) proxyFactory.getProxy()).sort(array))
                 .forEach(elem -> System.out.print(elem + " "));
         System.out.println();
         return System.nanoTime() - time;
     }
 
-    private long sortIterative(int[] array) {
-        long time = System.nanoTime();
-        Arrays.stream(((Recursive) proxyFactory.getProxy()).sort(array))
-                .forEach(elem -> System.out.print(elem + " "));
-        System.out.println();
-        return System.nanoTime() - time;
+    public Sorter addSortedByMergeSortIterative(int[] array) {
+        proxyFactory.setTarget(mergeSortIterative);
+
+        Sorter sorter = new Sorter(
+                mergeSortIterative.getClass().getName(),
+                array.length,
+                sortProceed(array));
+
+        sorterRepository.getSorters().add(sorter);
+
+        return sorter;
     }
 
-    public Sorter addSortedByMergeSort(int[] array) {
-//        proxyFactory.setTarget(mergeSort);
-//
-//        Sorter sorter = new Sorter(
-//                mergeSort.getClass().getName(),
-//                array.length,
-//                sortProceed(array));
-//
-//        sorterRepository.getSorters().add(sorter);
-//
-//        return sorter;
-        return null;
+    public Sorter addSortedByMergeSortRecursive(int[] array) {
+        proxyFactory.setTarget(mergeSortRecursive);
+
+        Sorter sorter = new Sorter(
+                mergeSortRecursive.getClass().getName(),
+                array.length,
+                sortProceed(array));
+
+        sorterRepository.getSorters().add(sorter);
+
+        return sorter;
     }
 
-    public Sorter addSortedByQuickSort(int[] array) {
-//        proxyFactory.setTarget(quickSort);
-//
-//        Sorter sorter = new Sorter(
-//                quickSort.getClass().getName(),
-//                array.length,
-//                sortProceed(array));
-//
-//        sorterRepository.getSorters().add(sorter);
-//
-//        return sorter;
-        return null;
+    public Sorter addSortedByQuickSortIterative(int[] array) {
+        proxyFactory.setTarget(quickSortIterative);
+
+        Sorter sorter = new Sorter(
+                quickSortIterative.getClass().getName(),
+                array.length,
+                sortProceed(array));
+
+        sorterRepository.getSorters().add(sorter);
+
+        return sorter;
+    }
+
+    public Sorter addSortedByQuickSortRecursive(int[] array) {
+        proxyFactory.setTarget(quickSortRecursive);
+
+        Sorter sorter = new Sorter(
+                quickSortRecursive.getClass().getName(),
+                array.length,
+                sortProceed(array));
+
+        sorterRepository.getSorters().add(sorter);
+
+        return sorter;
     }
 
     public List<Sorter> getAllSorters() {

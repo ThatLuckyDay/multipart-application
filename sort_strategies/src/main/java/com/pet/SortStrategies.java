@@ -13,14 +13,11 @@ public class SortStrategies {
 
     public static void main(String[] args) {
         int[] array = {-1, 5, 25, 7, 5, 10, 8, 12};
-        int[] shortArray = {-1, 5, 25, 7};
         ConfigurableApplicationContext context = SpringApplication.run(SortStrategies.class, args);
         SorterService service = context.getBean(SorterService.class);
-        System.out.println("Sort normal array:");
-        service.addSortedByQuickSort(array);
-        service.addSortedByMergeSort(array);
-        System.out.println("Sort short array");
-        service.addSortedByQuickSort(shortArray);
-        service.addSortedByMergeSort(shortArray);
+        service.addSortedByQuickSortIterative(array);
+        service.addSortedByQuickSortRecursive(array);
+        service.addSortedByMergeSortIterative(array);
+        service.addSortedByMergeSortRecursive(array);
     }
 }

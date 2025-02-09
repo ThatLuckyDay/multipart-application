@@ -14,17 +14,18 @@ plugins {
     id("io.spring.dependency-management") version "1.1.7"
 
     /* aspectj */
-    id("io.freefair.aspectj") version "8.12.1"
+    id("io.freefair.aspectj.post-compile-weaving") version "8.12.1"
 }
 
 dependencies {
     /* spring */
     implementation("org.springframework.boot:spring-boot-starter")
-
-    /* aop */
     implementation("org.springframework.boot:spring-boot-starter-aop")
+
+    /* aspectj */
     implementation("org.aspectj:aspectjweaver:1.9.22.1")
     implementation("org.aspectj:aspectjrt:1.9.22.1")
+    aspect("org.aspectj:aspectjtools:1.9.22.1")
 
     /* test */
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.0")
@@ -35,8 +36,4 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok:1.18.36")
     testCompileOnly("org.projectlombok:lombok:1.18.36")
     testAnnotationProcessor("org.projectlombok:lombok:1.18.36")
-}
-
-tasks.test {
-    useJUnitPlatform()
 }
