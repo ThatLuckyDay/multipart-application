@@ -9,18 +9,17 @@ import java.util.Map;
 
 public class IsModifiedData extends DelegatingIntroductionInterceptor implements IsModified {
     private boolean isModified = false;
-    private Map<Method, Method> methods = new HashMap<>();
+    private final Map<Method, Method> methods = new HashMap<>();
 
     @Override
     public boolean isModified() {
-        return false;
+        return this.isModified;
     }
 
     @Override
     public Object invoke(MethodInvocation mi) throws Throwable {
         if (!this.isModified()) {
             if (mi.getMethod()
-                    .getDeclaringClass()
                     .getName()
                     .startsWith("set")) {
                 Method getter = getGetter(mi.getMethod());
@@ -43,9 +42,7 @@ public class IsModifiedData extends DelegatingIntroductionInterceptor implements
     }
 
     private Method getGetter(Method setter) {
-        Method getter = null;
-
-        getter = this.methods.get(setter);
+        Method getter = this.methods.get(setter);
 
         if (getter != null) {
             return getter;

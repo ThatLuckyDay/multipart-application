@@ -2,10 +2,13 @@ package com.pet.service;
 
 import com.pet.model.Sorter;
 import com.pet.repository.SorterRepository;
+import com.pet.service.advice.IsModified;
+import com.pet.service.advice.IsModifiedAdvisor;
 import com.pet.service.advice.SortPointcut;
 import com.pet.service.advice.TimeAdvice;
 import com.pet.service.impl.InplaceSort;
 import org.springframework.aop.Advisor;
+import org.springframework.aop.IntroductionAdvisor;
 import org.springframework.aop.Pointcut;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
@@ -71,6 +74,20 @@ public class SorterService {
                 sortProceed(array));
 
         sorterRepository.getSorters().add(sorter);
+
+        /* introduction */
+        IntroductionAdvisor introductionAdvisor = new IsModifiedAdvisor();
+        ProxyFactory pf = new ProxyFactory();
+        pf.setTarget(sorter);
+        pf.addAdvisor(introductionAdvisor);
+        pf.setOptimize(true);
+        Sorter proxy = (Sorter) pf.getProxy();
+        IsModified proxyInterface = (IsModified) proxy;
+
+        System.out.println("Is modified? " + proxyInterface.isModified());
+        System.out.println("Change capacity!");
+        proxy.setCapacity(20);
+        System.out.println("Is modified? " + proxyInterface.isModified());
 
         return sorter;
     }
