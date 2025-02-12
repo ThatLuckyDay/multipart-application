@@ -4,6 +4,7 @@
 package com.pet;
 
 import com.pet.service.SorterService;
+import com.pet.service.advice.TimingAdvisor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -13,8 +14,11 @@ public class SortStrategies {
 
     public static void main(String[] args) {
         int[] array = {-1, 5, 25, 7, 5, 10, 8, 12};
+
         ConfigurableApplicationContext context = SpringApplication.run(SortStrategies.class, args);
+
         SorterService service = context.getBean(SorterService.class);
+
         service.addSortedByQuickSortIterative(array);
         service.addSortedByQuickSortRecursive(array);
         service.addSortedByMergeSortIterative(array);
