@@ -1,3 +1,5 @@
 rootProject.name = "multipart-application"
 
-include("sort_strategies", "application")
+include("application")
+include("sort_strategies")
+include("data")
