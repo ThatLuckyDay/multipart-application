@@ -1,4 +1,4 @@
-package com.pet.service.impl;
+package com.service.impl;
 
 import org.junit.jupiter.api.Test;
 
