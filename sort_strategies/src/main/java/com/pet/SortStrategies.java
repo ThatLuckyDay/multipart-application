@@ -4,7 +4,6 @@
 package com.pet;
 
 import com.pet.service.SorterService;
-import com.pet.service.advice.TimingAdvisor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;

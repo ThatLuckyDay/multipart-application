@@ -3,7 +3,6 @@ package com.pet.service.advice;
 import org.aopalliance.intercept.MethodInvocation;
 import org.springframework.aop.support.DelegatingIntroductionInterceptor;
 
-import java.util.Arrays;
 import java.util.stream.IntStream;
 
 public class TimingIntroduction extends DelegatingIntroductionInterceptor implements TimedExecution {
