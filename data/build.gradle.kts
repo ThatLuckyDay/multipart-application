@@ -1,5 +1,8 @@
 plugins {
     id("java")
+
+    id("io.spring.dependency-management") version "1.1.7"
+    id("org.springframework.boot") version "3.2.4"
 }
 
 group = "com.pet"
@@ -14,13 +17,14 @@ dependencies {
     /*postgresql*/
     implementation("org.postgresql:postgresql:42.7.5")
 
-    implementation("org.slf4j:slf4j-api:2.0.16")
+    implementation("com.h2database:h2:2.2.220")
 
-    /* log4j */
-    implementation("log4j:log4j:1.2.17")
+    implementation("org.springframework:spring-context:6.1.14")
+    implementation("org.springframework:spring-jdbc:5.3.30")
 
     /* slf4j */
-    testImplementation("org.slf4j:slf4j-log4j12:2.0.16")
+    implementation("org.slf4j:slf4j-log4j12:2.0.16")
+    implementation("org.slf4j:slf4j-api:2.0.16")
 
     implementation("org.apache.commons:commons-dbcp2:2.13.0")
 
@@ -33,7 +37,6 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok:1.18.36")
     testCompileOnly("org.projectlombok:lombok:1.18.36")
     testAnnotationProcessor("org.projectlombok:lombok:1.18.36")
-
 }
 
 tasks.test {

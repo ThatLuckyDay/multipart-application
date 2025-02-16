@@ -14,14 +14,27 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.BeanCreationException;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.jdbc.core.JdbcTemplate;
 
-public class PersonDaoImpl implements PersonDao {
+import javax.sql.DataSource;
+
+public class PersonDaoImpl implements PersonDao, InitializingBean {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DataMain.class);
+
+    private final DataSource dataSource;
+
+    private final JdbcTemplate jdbcTemplate;
+
+    public PersonDaoImpl(DataSource dataSource) {
+        this.dataSource = dataSource;
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
+    }
 
     private Connection getConnection() {
         Connection connection = null;
@@ -73,7 +86,7 @@ public class PersonDaoImpl implements PersonDao {
 
     @Override
     public String findLastNameById(int id) {
-        return null;
+        return this.jdbcTemplate.queryForObject("SELECT last_name FROM persons WHERE id = ?", String.class, id);
     }
 
     @Override
@@ -113,6 +126,13 @@ public class PersonDaoImpl implements PersonDao {
             LOGGER.error(throwables.getMessage(), throwables);
         }
         LOGGER.info("--------DELETE PERSON FROM A TABLE OF PERSONS - COMPETE--------");
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        if (dataSource == null) {
+            throw new BeanCreationException("DataSource в классе JdbcPersonDao не должен быть равен null");
+        }
     }
 
 }
