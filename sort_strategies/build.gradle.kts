@@ -21,6 +21,7 @@ dependencies {
     /* spring */
     implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-aop")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
 
     /* aspectj */
     implementation("org.aspectj:aspectjweaver:1.9.22.1")
@@ -30,10 +31,17 @@ dependencies {
     /* test */
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.10.0")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:5.10.0")
+    testImplementation("org.mockito:mockito-core:5.10.0")
+    testImplementation("org.mockito:mockito-junit-jupiter:5.10.0")
 
     /* loombok */
     compileOnly("org.projectlombok:lombok:1.18.36")
     annotationProcessor("org.projectlombok:lombok:1.18.36")
     testCompileOnly("org.projectlombok:lombok:1.18.36")
     testAnnotationProcessor("org.projectlombok:lombok:1.18.36")
+}
+
+tasks.test {
+    useJUnitPlatform()
 }
